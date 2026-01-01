@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Bisma ✨</title>
+    <style>
+        :root {
+            --primary: #ff2d75;
+            --bg: #0a0a0a;
+            --card: #1a1a1a;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .screen {
+            min-height: 100vh;
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Elements from your screenshots */
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: #2a101d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 45, 117, 0.3);
+        }
+
+        h1 { font-family: 'Brush Script MT', cursive; font-size: 3rem; color: var(--primary); margin: 10px 0; }
+        
+        button {
+            background: linear-gradient(45deg, #ff2d75, #ff6b9d);
+            border: none;
+            padding: 15px 40px;
+            color: white;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(255, 45, 117, 0.4);
+        }
+
+        /* Progress Bar Section */
+        .progress-container {
+            width: 80%;
+            max-width: 300px;
+            background: #333;
+            height: 12px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ff2d75, #ffb3d1);
+            transition: width 0.1s;
+        }
+
+        /* Secret Reveal Buttons */
+        .reveal-btn {
+            width: 90%;
+            max-width: 350px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 8px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .reveal-btn.unlocked { background: rgba(255, 45, 117, 0.1); border-color: var(--primary); }
+
+        .note-card {
+            background: linear-gradient(135deg, #ffb3d1, #ff75a0);
+            color: #4a001a;
+            padding: 30px;
+            border-radius: 20px;
+            width: 85%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="screen1" class="screen active">
+        <div class="avatar">🧸</div>
+        <h1>Hey Bisma</h1>
+        <p>Do you even know how special you are?</p>
+        <button onclick="nextScreen(2)">Open My Heart ❤️</button>
+    </div>
+
+    <div id="screen2" class="screen">
+        <h2 id="measureText">Measuring your cuteness...</h2>
+        <h1 id="percentText">0%</h1>
+        <div class="progress-container">
+            <div id="bar" class="progress-bar"></div>
+        </div>
+        <p id="statusText">Calculating...</p>
+    </div>
+
+    <div id="screen3" class="screen">
+        <div class="avatar" style="font-size: 40px;">💖</div>
+        <h1>Just for you</h1>
+        <p>Tap each one to reveal</p>
+        <div class="reveal-btn" onclick="reveal(this, 'You look adorable ✨')">❤️ Tap to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'You have the sweetest vibe 🍬')">❤️ Tap to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'You make things feel lighter 🎈')">❤️ Tap to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'The best bestie ever! 👩‍❤️‍👩')">❤️ Tap to reveal</div>
+        <button onclick="nextScreen(4)">See more →</button>
+    </div>
+
+    <div id="screen4" class="screen">
+        <h3>A little note for you</h3>
+        <div class="note-card">
+            <p>I just wanted to tell you something... You really are special in a way that's hard to explain. Happy Birthday, Bisma!</p>
+        </div>
+        <button onclick="nextScreen(5)">One last thing...</button>
+    </div>
+
+    <div id="screen5" class="screen">
+        <div class="avatar">🎂</div>
+        <h1>Happy Birthday Bisma!</h1>
+        <p>May your day be as beautiful as your heart. 🌟</p>
+        <div style="font-size: 40px; margin: 20px;">🎁🎈🎊</div>
+        <p><i>You'll always be special to me</i></p>
+    </div>
+
+    <script>
+        function nextScreen(num) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen' + num).classList.add('active');
+
+            if(num === 2) {
+                startLoading();
+            }
+        }
+
+        function startLoading() {
+            let width = 0;
+            let bar = document.getElementById('bar');
+            let percentText = document.getElementById('percentText');
+            let interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('statusText').innerText = "100% Cuteness Detected!";
+                    setTimeout(() => nextScreen(3), 1500);
+                } else {
+                    width++;
+                    bar.style.width = width + '%';
+                    percentText.innerText = width + '%';
+                }
+            }, 30);
+        }
+
+        function reveal(el, text) {
+            el.innerText = text;
+            el.classList.add('unlocked');
+        }
+    </script>
+</body>
+</html>
