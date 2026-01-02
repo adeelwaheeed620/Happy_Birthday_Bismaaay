@@ -116,11 +116,15 @@
             left: -2px;
             box-shadow: 0 0 15px #ffcc00;
             animation: flicker 0.1s infinite alternate;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 1;
+            display: block;
         }
+
+        /* Forces the flame to disappear instantly when 'out' class is added */
         .flame.out { 
-            opacity: 0; 
-            transform: scale(0) translateY(-20px);
+            opacity: 0 !important; 
+            display: none !important;
+            transition: none !important;
         }
 
         @keyframes flicker {
@@ -141,7 +145,6 @@
             width: 0%;
             height: 100%;
             background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
             transition: width 0.05s linear;
         }
 
@@ -153,7 +156,7 @@
             border-radius: 10px;
             margin: 20px 0;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .progress-bar {
@@ -190,7 +193,7 @@
             border-radius: 20px;
             width: 85%;
             max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             font-size: 1.2rem;
             line-height: 1.5;
         }
@@ -256,7 +259,7 @@
             <div class="cake-top-layer"></div>
         </div>
 
-        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">Listening... (or Tap Cake)</p>
+        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">(Or Tap Cake to blow)</p>
     </div>
 
     <div id="screen6" class="screen">
@@ -301,12 +304,10 @@
             el.classList.add('unlocked');
         }
 
-        // --- ULTRA SENSITIVE MIC BLOW DETECTION ---
         let isBlown = false;
         function initMic() {
             if (isBlown) return;
 
-            // Request mic WITH processing DISABLED for raw sound capture
             const constraints = { 
                 audio: { 
                     echoCancellation: false, 
@@ -321,7 +322,7 @@
                 const analyser = audioContext.createAnalyser();
                 const source = audioContext.createMediaStreamSource(stream);
                 
-                analyser.fftSize = 512;
+                analyser.fftSize = 256;
                 source.connect(analyser);
 
                 const dataArray = new Uint8Array(analyser.frequencyBinCount);
@@ -331,18 +332,15 @@
                     if (isBlown) return;
 
                     analyser.getByteFrequencyData(dataArray);
-                    
-                    // Find the peak volume in the frequency data
                     let peak = 0;
                     for (let i = 0; i < dataArray.length; i++) {
                         if (dataArray[i] > peak) peak = dataArray[i];
                     }
                     
-                    // Update visualizer
                     micBar.style.width = (peak / 255 * 100) + "%";
 
-                    // Threshold: If sound hits 40% of max capacity
-                    if (peak > 110) { 
+                    // Sensitivity Threshold
+                    if (peak > 115) { 
                         blowOut();
                     } else {
                         requestAnimationFrame(monitor);
@@ -351,7 +349,6 @@
                 monitor();
             })
             .catch(err => {
-                console.log("Mic error:", err);
                 document.getElementById('mic-status').innerText = "Mic blocked. Please Tap the Cake!";
             });
         }
@@ -359,10 +356,18 @@
         function blowOut() {
             if (isBlown) return;
             isBlown = true;
-            document.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
+            
+            // Forcefully hide all flames immediately
+            const flames = document.querySelectorAll('.flame');
+            flames.forEach(f => {
+                f.style.display = 'none'; // Instant removal
+                f.classList.add('out');    // Extra CSS safety
+            });
+
             document.getElementById('mic-hint').innerText = "Happy Birthday!! ❤️";
-            setTimeout(() => nextScreen(6), 2000);
+            setTimeout(() => nextScreen(6), 1500);
         }
     </script>
 </body>
 </html>
+
