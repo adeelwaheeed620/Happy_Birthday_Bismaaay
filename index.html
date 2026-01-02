@@ -42,7 +42,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Elements from your screenshots */
         .avatar {
             width: 120px;
             height: 120px;
@@ -57,7 +56,7 @@
             box-shadow: 0 0 20px rgba(255, 45, 117, 0.3);
         }
 
-        h1 { font-family: 'Brush Script MT', cursive; font-size: 3rem; color: var(--primary); margin: 10px 0; }
+        h1 { font-family: 'Brush Script MT', cursive; font-size: 3.5rem; color: var(--primary); margin: 10px 0; }
         
         button {
             background: linear-gradient(45deg, #ff2d75, #ff6b9d);
@@ -72,25 +71,24 @@
             box-shadow: 0 5px 15px rgba(255, 45, 117, 0.4);
         }
 
-        /* Progress Bar Section */
         .progress-container {
             width: 80%;
             max-width: 300px;
             background: #333;
-            height: 12px;
+            height: 14px;
             border-radius: 10px;
             margin: 20px 0;
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .progress-bar {
             width: 0%;
             height: 100%;
             background: linear-gradient(to right, #ff2d75, #ffb3d1);
-            transition: width 0.1s;
+            box-shadow: 0 0 10px var(--primary);
         }
 
-        /* Secret Reveal Buttons */
         .reveal-btn {
             width: 90%;
             max-width: 350px;
@@ -101,9 +99,15 @@
             border-radius: 15px;
             cursor: pointer;
             transition: 0.3s;
+            color: #ccc;
         }
 
-        .reveal-btn.unlocked { background: rgba(255, 45, 117, 0.1); border-color: var(--primary); }
+        .reveal-btn.unlocked { 
+            background: rgba(255, 45, 117, 0.15); 
+            border-color: var(--primary); 
+            color: white;
+            font-weight: bold;
+        }
 
         .note-card {
             background: linear-gradient(135deg, #ffb3d1, #ff75a0);
@@ -113,6 +117,16 @@
             width: 85%;
             max-width: 400px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+
+        #percentText {
+            font-size: 4rem;
+            font-weight: bold;
+            font-style: italic;
+            color: var(--primary);
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -121,32 +135,33 @@
     <div id="screen1" class="screen active">
         <div class="avatar">🧸</div>
         <h1>Hey Bisma</h1>
-        <p>Do you even know how special you are?</p>
+        <p>Do you even know how cute you are?</p>
         <button onclick="nextScreen(2)">Open My Heart ❤️</button>
     </div>
 
     <div id="screen2" class="screen">
-        <h2 id="measureText">Measuring your cuteness...</h2>
-        <h1 id="percentText">0%</h1>
+        <h2 style="font-weight: normal;">Measuring your cuteness...</h2>
+        <div id="percentText">0%</div>
         <div class="progress-container">
             <div id="bar" class="progress-bar"></div>
         </div>
-        <p id="statusText">Calculating...</p>
+        <p id="statusText" style="letter-spacing: 1px; color: #aaa;">Calculating...</p>
     </div>
 
     <div id="screen3" class="screen">
-        <div class="avatar" style="font-size: 40px;">💖</div>
-        <h1>Just for you</h1>
-        <p>Tap each one to reveal</p>
-        <div class="reveal-btn" onclick="reveal(this, 'You look adorable ✨')">❤️ Tap to reveal</div>
-        <div class="reveal-btn" onclick="reveal(this, 'You have the sweetest vibe 🍬')">❤️ Tap to reveal</div>
-        <div class="reveal-btn" onclick="reveal(this, 'You make things feel lighter 🎈')">❤️ Tap to reveal</div>
-        <div class="reveal-btn" onclick="reveal(this, 'The best bestie ever! 👩‍❤️‍👩')">❤️ Tap to reveal</div>
-        <button onclick="nextScreen(4)">See more →</button>
+        <div class="avatar" style="font-size: 40px; background: none; border: none; box-shadow: none;">❤️</div>
+        <h1 style="font-size: 2.5rem;">Just for you</h1>
+        <p style="margin-bottom: 20px;">Tap each one to reveal</p>
+        <div class="reveal-btn" onclick="reveal(this, 'You look adorable ✨')">Click to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'You have the sweetest vibe 🍬')">Click to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'You make things feel lighter 🎈')">Click to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'The best bestie ever! 👩‍❤️‍👩')">Click to reveal</div>
+        <button onclick="nextScreen(4)" style="margin-top: 30px;">See more →</button>
+        <p style="font-size: 12px; margin-top: 20px; opacity: 0.5;">@yourname</p>
     </div>
 
     <div id="screen4" class="screen">
-        <h3>A little note for you</h3>
+        <h2 style="font-family: 'Brush Script MT', cursive; font-size: 2.5rem;">A little note for you</h2>
         <div class="note-card">
             <p>I just wanted to tell you something... You really are special in a way that's hard to explain. Happy Birthday, Bisma!</p>
         </div>
@@ -156,7 +171,7 @@
     <div id="screen5" class="screen">
         <div class="avatar">🎂</div>
         <h1>Happy Birthday Bisma!</h1>
-        <p>May your day be as beautiful as your heart. 🌟</p>
+        <p style="font-size: 1.2rem;">May your day be as beautiful as your heart. 🌟</p>
         <div style="font-size: 40px; margin: 20px;">🎁🎈🎊</div>
         <p><i>You'll always be special to me</i></p>
     </div>
@@ -175,17 +190,26 @@
             let width = 0;
             let bar = document.getElementById('bar');
             let percentText = document.getElementById('percentText');
+            let statusText = document.getElementById('statusText');
+            
             let interval = setInterval(() => {
-                if (width >= 100) {
+                if (width >= 120) {
                     clearInterval(interval);
-                    document.getElementById('statusText').innerText = "100% Cuteness Detected!";
-                    setTimeout(() => nextScreen(3), 1500);
+                    statusText.innerText = "Cuteness Overloaded!";
+                    statusText.style.color = "#ff2d75";
+                    statusText.style.fontWeight = "bold";
+                    setTimeout(() => nextScreen(3), 2000);
                 } else {
                     width++;
-                    bar.style.width = width + '%';
+                    // Bar maxes out visually at 100% but the text goes to 120%
+                    bar.style.width = (width > 100 ? 100 : width) + '%';
                     percentText.innerText = width + '%';
+                    
+                    if(width === 101) {
+                        statusText.innerText = "Wait... it's still going!";
+                    }
                 }
-            }, 30);
+            }, 40); // Slightly slower for better effect
         }
 
         function reveal(el, text) {
