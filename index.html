@@ -71,6 +71,32 @@
             box-shadow: 0 5px 15px rgba(255, 45, 117, 0.4);
         }
 
+        /* --- New Cake Styles --- */
+        .cake-container { position: relative; width: 200px; height: 150px; margin-top: 50px; }
+        .cake-body { 
+            width: 200px; height: 100px; background: #ff4d8d; border-radius: 10px 10px 0 0; 
+            position: absolute; bottom: 0; box-shadow: 0 5px 0 #d11d5a;
+        }
+        .cake-top { 
+            width: 200px; height: 40px; background: #ff8ab3; border-radius: 50%; 
+            position: absolute; top: 40px; 
+        }
+        .candle {
+            width: 10px; height: 40px; background: white; position: absolute; top: 0;
+            left: 50%; transform: translateX(-50%); border-radius: 2px;
+        }
+        .flame {
+            width: 12px; height: 20px; background: #ffa500; border-radius: 50% 50% 20% 20%;
+            position: absolute; top: -20px; left: -1px; 
+            box-shadow: 0 0 10px #ffcc00; animation: flicker 0.1s infinite alternate;
+        }
+        .flame.off { display: none; }
+        @keyframes flicker {
+            from { transform: scale(1); opacity: 0.9; }
+            to { transform: scale(1.1); opacity: 1; }
+        }
+        /* ----------------------- */
+
         .progress-container {
             width: 80%;
             max-width: 300px;
@@ -165,10 +191,24 @@
         <div class="note-card">
             <p>Happy birthday mri shehzaadi❤️....Allah tumhei hameshaaaa khush rkhyy or duniya ki har preshani sy dur rkhy(Ameeen)🦋❣️the moments spent with r the bestest moments yrrrr 🙌Khush rha kro Hameshaa or apna khayal rkha kro 💖💌U mean the 🌎 to me 🤌..or udaas na howa kro 💐stay blessed mri jaaaaan 🌹 I adore u alottt🫂</p>
         </div>
-        <button onclick="nextScreen(5)">One last thing...</button>
+        <button onclick="startCakeScreen()">One last thing...</button>
     </div>
 
     <div id="screen5" class="screen">
+        <h1>Make a Wish...</h1>
+        <p>Blow into your microphone to blow out the candles! 🎤</p>
+        
+        <div class="cake-container">
+            <div class="candle"><div class="flame" id="f1"></div></div>
+            <div class="candle" style="left: 30%"><div class="flame" id="f2"></div></div>
+            <div class="candle" style="left: 70%"><div class="flame" id="f3"></div></div>
+            <div class="cake-body"></div>
+            <div class="cake-top"></div>
+        </div>
+        <p id="mic-status" style="margin-top: 40px; color: var(--primary); font-style: italic;">Wait for mic access...</p>
+    </div>
+
+    <div id="screen6" class="screen">
         <div class="avatar">🎂</div>
         <h1>Once Again Happy Birthday Bisma🌹🌸✨</h1>
         <p style="font-size: 1.2rem;">May your every desire be fulfilled 💫May u get your heart in peace yara 🫂🦋🌹Ameeeeen</p>
@@ -201,7 +241,6 @@
                     setTimeout(() => nextScreen(3), 2000);
                 } else {
                     width++;
-                    // Bar maxes out visually at 100% but the text goes to 120%
                     bar.style.width = (width > 100 ? 100 : width) + '%';
                     percentText.innerText = width + '%';
                     
@@ -209,12 +248,65 @@
                         statusText.innerText = "Wait... it's still going!";
                     }
                 }
-            }, 40); // Slightly slower for better effect
+            }, 40);
         }
 
         function reveal(el, text) {
             el.innerText = text;
             el.classList.add('unlocked');
+        }
+
+        // Microphone & Cake Logic
+        function startCakeScreen() {
+            nextScreen(5);
+            initMic();
+        }
+
+        function initMic() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(stream);
+                const javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+
+                analyser.smoothingTimeConstant = 0.8;
+                analyser.fftSize = 1024;
+
+                microphone.connect(analyser);
+                analyser.connect(javascriptNode);
+                javascriptNode.connect(audioContext.destination);
+
+                document.getElementById('mic-status').innerText = "Now BLOW! 🌬️";
+
+                javascriptNode.onaudioprocess = function() {
+                    let array = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(array);
+                    let values = 0;
+                    for (let i = 0; i < array.length; i++) {
+                        values += array[i];
+                    }
+                    let average = values / array.length;
+
+                    if (average > 40) { // Threshold for "Blow"
+                        document.getElementById('f1').classList.add('off');
+                        document.getElementById('f2').classList.add('off');
+                        document.getElementById('f3').classList.add('off');
+                        
+                        javascriptNode.onaudioprocess = null; // Stop listening
+                        setTimeout(() => nextScreen(6), 1500);
+                    }
+                };
+            })
+            .catch(err => {
+                document.getElementById('mic-status').innerText = "Mic error! Just tap the cake to blow candles.";
+                document.querySelector('.cake-container').onclick = () => {
+                    document.getElementById('f1').classList.add('off');
+                    document.getElementById('f2').classList.add('off');
+                    document.getElementById('f3').classList.add('off');
+                    setTimeout(() => nextScreen(6), 1500);
+                };
+            });
         }
     </script>
 </body>
