@@ -77,6 +77,7 @@
             margin-top: 50px;
             width: 200px;
             height: 150px;
+            cursor: pointer;
         }
         .cake-base {
             width: 200px;
@@ -115,13 +116,32 @@
             left: -2px;
             box-shadow: 0 0 15px #ffcc00;
             animation: flicker 0.1s infinite alternate;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
-        .flame.out { opacity: 0; }
+        .flame.out { 
+            opacity: 0; 
+            transform: scale(0) translateY(-10px);
+        }
 
         @keyframes flicker {
             from { transform: scale(1); opacity: 0.8; }
             to { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Mic Intensity Visualizer */
+        .mic-visualizer {
+            width: 100px;
+            height: 4px;
+            background: #333;
+            margin: 10px auto;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        #mic-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.1s;
         }
 
         .progress-container {
@@ -206,7 +226,7 @@
         <h1 style="font-size: 2.5rem;">LITTLE obsessions from u🤌🦋</h1>
         <p style="margin-bottom: 20px;">Tap each one to reveal</p>
         <div class="reveal-btn" onclick="reveal(this, 'With u I have a my Premium daysss🌹💫✨✨')">Click to reveal</div>
-        <div class="reveal-btn" onclick="reveal(this, 'tumhary sth har ik pal haseen lgta 😭🍬')">Click to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'tumhary sth har ik pal haseeb lgta 😭🍬')">Click to reveal</div>
         <div class="reveal-btn" onclick="reveal(this, 'You make things feel lighter even though my heart🎈❣️')">Click to reveal</div>
         <div class="reveal-btn" onclick="reveal(this, 'Allah ka diya howa tuhfa ho tum 👩‍❤️‍👩')">Click to reveal</div>
         <button onclick="nextScreen(4)" style="margin-top: 30px;">See more →</button>
@@ -223,9 +243,11 @@
 
     <div id="screen5" class="screen">
         <h1 style="font-size: 2.5rem;">Make a Wish...</h1>
-        <p id="mic-hint">Blow into your mic to blow the candles! 🌬️</p>
+        <p id="mic-hint" style="margin-bottom: 5px;">Blow into your mic to blow the candles! 🌬️</p>
         
-        <div class="cake-wrapper" id="cakeContainer">
+        <div class="mic-visualizer"><div id="mic-bar"></div></div>
+
+        <div class="cake-wrapper" id="cakeContainer" onclick="blowOut()">
             <div class="candle"><div class="flame"></div></div>
             <div class="candle" style="left: 30%;"><div class="flame"></div></div>
             <div class="candle" style="left: 70%;"><div class="flame"></div></div>
@@ -233,7 +255,7 @@
             <div class="cake-top-layer"></div>
         </div>
 
-        <p id="mic-status" style="margin-top: 30px; opacity: 0.6;">Allow microphone access to blow!</p>
+        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">Tap cake if mic doesn't work</p>
     </div>
 
     <div id="screen6" class="screen">
@@ -242,6 +264,7 @@
         <p style="font-size: 1.2rem;">May your every desire be fulfilled 💫May u get your heart in peace yara 🫂🦋🌹Ameeeeen</p>
         <div style="font-size: 40px; margin: 20px;">🎁🎈🎊</div>
         <p><i>You'll always be special to me always even though tum kaheeen bh ho 💞🌺</i></p>
+        <button onclick="resetCandles()" style="padding: 10px 20px; font-size: 0.8rem; opacity: 0.7;">Relight Candles? 🕯️</button>
     </div>
 
     <script>
@@ -249,12 +272,8 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen' + num).classList.add('active');
 
-            if(num === 2) {
-                startLoading();
-            }
-            if(num === 5) {
-                initMic(); // Start listening for the blow on the cake screen
-            }
+            if(num === 2) startLoading();
+            if(num === 5) initMic(); 
         }
 
         function startLoading() {
@@ -268,7 +287,6 @@
                     clearInterval(interval);
                     statusText.innerText = "Cuteness Overloaded!";
                     statusText.style.color = "#ff2d75";
-                    statusText.style.fontWeight = "bold";
                     setTimeout(() => nextScreen(3), 2000);
                 } else {
                     width++;
@@ -284,43 +302,57 @@
             el.classList.add('unlocked');
         }
 
-        // --- Microphone Blow Detection ---
+        // --- Improved Mic Blow Detection ---
+        let micActive = false;
         function initMic() {
+            if (micActive) return;
             navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
+                micActive = true;
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const analyser = audioContext.createAnalyser();
                 const source = audioContext.createMediaStreamSource(stream);
-                const processor = audioContext.createScriptProcessor(2048, 1, 1);
-
-                analyser.fftSize = 512;
+                
+                analyser.fftSize = 256;
                 source.connect(analyser);
-                analyser.connect(processor);
-                processor.connect(audioContext.destination);
 
-                document.getElementById('mic-status').innerText = "Listening for your wish... 🌬️";
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                const micBar = document.getElementById('mic-bar');
 
-                processor.onaudioprocess = function() {
-                    const data = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteFrequencyData(data);
-                    let volume = data.reduce((a, b) => a + b) / data.length;
-
-                    if (volume > 50) { // Detection threshold
-                        blowOut();
-                        processor.onaudioprocess = null; // Stop listening after success
+                function checkVolume() {
+                    analyser.getByteFrequencyData(dataArray);
+                    let values = 0;
+                    for (let i = 0; i < dataArray.length; i++) {
+                        values += dataArray[i];
                     }
-                };
+                    let average = values / dataArray.length;
+                    
+                    // Update visualizer bar
+                    micBar.style.width = Math.min(average * 2, 100) + "%";
+
+                    if (average > 35) { // Lowered threshold for easier blowing
+                        blowOut();
+                    } else {
+                        if(micActive) requestAnimationFrame(checkVolume);
+                    }
+                }
+                checkVolume();
             })
             .catch(err => {
-                document.getElementById('mic-status').innerText = "Mic blocked. Tap the cake to blow!";
-                document.getElementById('cakeContainer').onclick = blowOut;
+                document.getElementById('mic-status').innerText = "Mic access required. Tap cake to blow!";
             });
         }
 
         function blowOut() {
+            micActive = false; // Stop mic loop
             document.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
-            document.getElementById('mic-hint').innerText = "Make a wish! ❤️";
+            document.getElementById('mic-hint').innerText = "Wish coming true... ❤️";
             setTimeout(() => nextScreen(6), 2000);
+        }
+
+        function resetCandles() {
+            document.querySelectorAll('.flame').forEach(f => f.classList.remove('out'));
+            nextScreen(5);
         }
     </script>
 </body>
