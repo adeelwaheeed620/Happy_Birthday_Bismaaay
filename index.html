@@ -71,31 +71,58 @@
             box-shadow: 0 5px 15px rgba(255, 45, 117, 0.4);
         }
 
-        /* --- New Cake Styles --- */
-        .cake-container { position: relative; width: 200px; height: 150px; margin-top: 50px; }
-        .cake-body { 
-            width: 200px; height: 100px; background: #ff4d8d; border-radius: 10px 10px 0 0; 
-            position: absolute; bottom: 0; box-shadow: 0 5px 0 #d11d5a;
+        /* --- Stylish Cake --- */
+        .cake-wrapper {
+            position: relative;
+            margin-top: 50px;
+            width: 200px;
+            height: 150px;
         }
-        .cake-top { 
-            width: 200px; height: 40px; background: #ff8ab3; border-radius: 50%; 
-            position: absolute; top: 40px; 
+        .cake-base {
+            width: 200px;
+            height: 100px;
+            background: #f06292;
+            position: absolute;
+            bottom: 0;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 6px 0 #ad1457;
+        }
+        .cake-top-layer {
+            width: 200px;
+            height: 40px;
+            background: #f48fb1;
+            border-radius: 50%;
+            position: absolute;
+            top: 40px;
         }
         .candle {
-            width: 10px; height: 40px; background: white; position: absolute; top: 0;
-            left: 50%; transform: translateX(-50%); border-radius: 2px;
+            width: 10px;
+            height: 45px;
+            background: repeating-linear-gradient(0deg, #fff, #fff 5px, var(--primary) 5px, var(--primary) 10px);
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 3px;
         }
         .flame {
-            width: 12px; height: 20px; background: #ffa500; border-radius: 50% 50% 20% 20%;
-            position: absolute; top: -20px; left: -1px; 
-            box-shadow: 0 0 10px #ffcc00; animation: flicker 0.1s infinite alternate;
+            width: 15px;
+            height: 25px;
+            background: #ffa500;
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            top: -25px;
+            left: -2px;
+            box-shadow: 0 0 15px #ffcc00;
+            animation: flicker 0.1s infinite alternate;
+            transition: opacity 0.5s ease;
         }
-        .flame.off { display: none; }
+        .flame.out { opacity: 0; }
+
         @keyframes flicker {
-            from { transform: scale(1); opacity: 0.9; }
+            from { transform: scale(1); opacity: 0.8; }
             to { transform: scale(1.1); opacity: 1; }
         }
-        /* ----------------------- */
 
         .progress-container {
             width: 80%;
@@ -179,8 +206,8 @@
         <h1 style="font-size: 2.5rem;">Just for you mri jaaan k tukrayyyy🦋</h1>
         <p style="margin-bottom: 20px;">Tap each one to reveal</p>
         <div class="reveal-btn" onclick="reveal(this, 'You look adorable ✨')">Click to reveal</div>
-        <div class="reveal-btn" onclick="reveal(this, 'tumhary sth har ik pal haseeb lgta 😭🍬')">Click to reveal</div>
-        <div class="reveal-btn" onclick="reveal(this, 'You make things feel lighter even though my hear💓t🎈')">Click to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'tumhary sth har ik pal haseen lgta 😭🍬')">Click to reveal</div>
+        <div class="reveal-btn" onclick="reveal(this, 'You make things feel lighter even though my heart🎈❣️')">Click to reveal</div>
         <div class="reveal-btn" onclick="reveal(this, 'Allah ka diya howa tuhfa ho tum 👩‍❤️‍👩')">Click to reveal</div>
         <button onclick="nextScreen(4)" style="margin-top: 30px;">See more →</button>
         <p style="font-size: 12px; margin-top: 20px; opacity: 0.5;">@yourname</p>
@@ -191,21 +218,22 @@
         <div class="note-card">
             <p>Happy birthday mri shehzaadi❤️....Allah tumhei hameshaaaa khush rkhyy or duniya ki har preshani sy dur rkhy(Ameeen)🦋❣️the moments spent with r the bestest moments yrrrr 🙌Khush rha kro Hameshaa or apna khayal rkha kro 💖💌U mean the 🌎 to me 🤌..or udaas na howa kro 💐stay blessed mri jaaaaan 🌹 I adore u alottt🫂</p>
         </div>
-        <button onclick="startCakeScreen()">One last thing...</button>
+        <button onclick="nextScreen(5)">One last thing...</button>
     </div>
 
     <div id="screen5" class="screen">
-        <h1>Make a Wish...</h1>
-        <p>Blow into your microphone to blow out the candles! 🎤</p>
+        <h1 style="font-size: 2.5rem;">Make a Wish...</h1>
+        <p id="mic-hint">Blow into your mic to blow the candles! 🌬️</p>
         
-        <div class="cake-container">
-            <div class="candle"><div class="flame" id="f1"></div></div>
-            <div class="candle" style="left: 30%"><div class="flame" id="f2"></div></div>
-            <div class="candle" style="left: 70%"><div class="flame" id="f3"></div></div>
-            <div class="cake-body"></div>
-            <div class="cake-top"></div>
+        <div class="cake-wrapper" id="cakeContainer">
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle" style="left: 30%;"><div class="flame"></div></div>
+            <div class="candle" style="left: 70%;"><div class="flame"></div></div>
+            <div class="cake-base"></div>
+            <div class="cake-top-layer"></div>
         </div>
-        <p id="mic-status" style="margin-top: 40px; color: var(--primary); font-style: italic;">Wait for mic access...</p>
+
+        <p id="mic-status" style="margin-top: 30px; opacity: 0.6;">Allow microphone access to blow!</p>
     </div>
 
     <div id="screen6" class="screen">
@@ -223,6 +251,9 @@
 
             if(num === 2) {
                 startLoading();
+            }
+            if(num === 5) {
+                initMic(); // Start listening for the blow on the cake screen
             }
         }
 
@@ -243,10 +274,7 @@
                     width++;
                     bar.style.width = (width > 100 ? 100 : width) + '%';
                     percentText.innerText = width + '%';
-                    
-                    if(width === 101) {
-                        statusText.innerText = "Wait... it's still going!";
-                    }
+                    if(width === 101) statusText.innerText = "Wait... it's still going!";
                 }
             }, 40);
         }
@@ -256,57 +284,43 @@
             el.classList.add('unlocked');
         }
 
-        // Microphone & Cake Logic
-        function startCakeScreen() {
-            nextScreen(5);
-            initMic();
-        }
-
+        // --- Microphone Blow Detection ---
         function initMic() {
             navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const analyser = audioContext.createAnalyser();
-                const microphone = audioContext.createMediaStreamSource(stream);
-                const javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+                const source = audioContext.createMediaStreamSource(stream);
+                const processor = audioContext.createScriptProcessor(2048, 1, 1);
 
-                analyser.smoothingTimeConstant = 0.8;
-                analyser.fftSize = 1024;
+                analyser.fftSize = 512;
+                source.connect(analyser);
+                analyser.connect(processor);
+                processor.connect(audioContext.destination);
 
-                microphone.connect(analyser);
-                analyser.connect(javascriptNode);
-                javascriptNode.connect(audioContext.destination);
+                document.getElementById('mic-status').innerText = "Listening for your wish... 🌬️";
 
-                document.getElementById('mic-status').innerText = "Now BLOW! 🌬️";
+                processor.onaudioprocess = function() {
+                    const data = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(data);
+                    let volume = data.reduce((a, b) => a + b) / data.length;
 
-                javascriptNode.onaudioprocess = function() {
-                    let array = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteFrequencyData(array);
-                    let values = 0;
-                    for (let i = 0; i < array.length; i++) {
-                        values += array[i];
-                    }
-                    let average = values / array.length;
-
-                    if (average > 40) { // Threshold for "Blow"
-                        document.getElementById('f1').classList.add('off');
-                        document.getElementById('f2').classList.add('off');
-                        document.getElementById('f3').classList.add('off');
-                        
-                        javascriptNode.onaudioprocess = null; // Stop listening
-                        setTimeout(() => nextScreen(6), 1500);
+                    if (volume > 50) { // Detection threshold
+                        blowOut();
+                        processor.onaudioprocess = null; // Stop listening after success
                     }
                 };
             })
             .catch(err => {
-                document.getElementById('mic-status').innerText = "Mic error! Just tap the cake to blow candles.";
-                document.querySelector('.cake-container').onclick = () => {
-                    document.getElementById('f1').classList.add('off');
-                    document.getElementById('f2').classList.add('off');
-                    document.getElementById('f3').classList.add('off');
-                    setTimeout(() => nextScreen(6), 1500);
-                };
+                document.getElementById('mic-status').innerText = "Mic blocked. Tap the cake to blow!";
+                document.getElementById('cakeContainer').onclick = blowOut;
             });
+        }
+
+        function blowOut() {
+            document.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
+            document.getElementById('mic-hint').innerText = "Make a wish! ❤️";
+            setTimeout(() => nextScreen(6), 2000);
         }
     </script>
 </body>
