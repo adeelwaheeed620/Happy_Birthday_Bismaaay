@@ -43,168 +43,46 @@
         }
 
         .avatar {
-            width: 120px;
-            height: 120px;
-            background: #2a101d;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50px;
-            margin-bottom: 20px;
-            border: 2px solid var(--primary);
+            width: 120px; height: 120px; background: #2a101d; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 50px; margin-bottom: 20px; border: 2px solid var(--primary);
             box-shadow: 0 0 20px rgba(255, 45, 117, 0.3);
         }
 
         h1 { font-family: 'Brush Script MT', cursive; font-size: 3.5rem; color: var(--primary); margin: 10px 0; }
         
         button {
-            background: linear-gradient(45deg, #ff2d75, #ff6b9d);
-            border: none;
-            padding: 15px 40px;
-            color: white;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
+            background: linear-gradient(45deg, #ff2d75, #ff6b9d); border: none;
+            padding: 15px 40px; color: white; border-radius: 50px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px;
             box-shadow: 0 5px 15px rgba(255, 45, 117, 0.4);
         }
 
-        /* --- Stylish Cake --- */
-        .cake-wrapper {
-            position: relative;
-            margin-top: 50px;
-            width: 200px;
-            height: 150px;
-            cursor: pointer;
-        }
-        .cake-base {
-            width: 200px;
-            height: 100px;
-            background: #f06292;
-            position: absolute;
-            bottom: 0;
-            border-radius: 10px 10px 0 0;
-            box-shadow: 0 6px 0 #ad1457;
-        }
-        .cake-top-layer {
-            width: 200px;
-            height: 40px;
-            background: #f48fb1;
-            border-radius: 50%;
-            position: absolute;
-            top: 40px;
-        }
-        .candle {
-            width: 10px;
-            height: 45px;
-            background: repeating-linear-gradient(0deg, #fff, #fff 5px, var(--primary) 5px, var(--primary) 10px);
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 3px;
-        }
+        .cake-wrapper { position: relative; margin-top: 50px; width: 200px; height: 150px; cursor: pointer; }
+        .cake-base { width: 200px; height: 100px; background: #f06292; position: absolute; bottom: 0; border-radius: 10px 10px 0 0; box-shadow: 0 6px 0 #ad1457; }
+        .cake-top-layer { width: 200px; height: 40px; background: #f48fb1; border-radius: 50%; position: absolute; top: 40px; }
+        .candle { width: 10px; height: 45px; background: repeating-linear-gradient(0deg, #fff, #fff 5px, var(--primary) 5px, var(--primary) 10px); position: absolute; top: -5px; left: 50%; transform: translateX(-50%); border-radius: 3px; }
+        
         .flame {
-            width: 15px;
-            height: 25px;
-            background: #ffa500;
-            border-radius: 50% 50% 20% 20%;
-            position: absolute;
-            top: -25px;
-            left: -2px;
-            box-shadow: 0 0 15px #ffcc00;
-            animation: flicker 0.1s infinite alternate;
-            opacity: 1;
-            display: block;
+            width: 15px; height: 25px; background: #ffa500; border-radius: 50% 50% 20% 20%;
+            position: absolute; top: -25px; left: -2px; box-shadow: 0 0 15px #ffcc00;
+            animation: flicker 0.1s infinite alternate; opacity: 1; display: block;
         }
 
-        /* Forces the flame to disappear instantly when 'out' class is added */
-        .flame.out { 
-            opacity: 0 !important; 
-            display: none !important;
-            transition: none !important;
-        }
+        .flame.out { opacity: 0 !important; display: none !important; }
 
-        @keyframes flicker {
-            from { transform: scale(1); opacity: 0.8; }
-            to { transform: scale(1.1); opacity: 1; }
-        }
+        @keyframes flicker { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.1); opacity: 1; } }
 
-        .mic-visualizer {
-            width: 150px;
-            height: 6px;
-            background: #222;
-            margin: 15px auto;
-            border-radius: 10px;
-            border: 1px solid #333;
-            overflow: hidden;
-        }
-        #mic-bar {
-            width: 0%;
-            height: 100%;
-            background: var(--primary);
-            transition: width 0.05s linear;
-        }
+        .mic-visualizer { width: 150px; height: 6px; background: #222; margin: 15px auto; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
+        #mic-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.05s linear; }
 
-        .progress-container {
-            width: 80%;
-            max-width: 300px;
-            background: #333;
-            height: 14px;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .progress-container { width: 80%; max-width: 300px; background: #333; height: 14px; border-radius: 10px; margin: 20px 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .progress-bar { width: 0%; height: 100%; background: linear-gradient(to right, #ff2d75, #ffb3d1); box-shadow: 0 0 10px var(--primary); }
 
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(to right, #ff2d75, #ffb3d1);
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        .reveal-btn {
-            width: 90%;
-            max-width: 350px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            margin: 8px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: #ccc;
-        }
-
-        .reveal-btn.unlocked { 
-            background: rgba(255, 45, 117, 0.15); 
-            border-color: var(--primary); 
-            color: white;
-            font-weight: bold;
-        }
-
-        .note-card {
-            background: linear-gradient(135deg, #ffb3d1, #ff75a0);
-            color: #4a001a;
-            padding: 30px;
-            border-radius: 20px;
-            width: 85%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            font-size: 1.2rem;
-            line-height: 1.5;
-        }
-
-        #percentText {
-            font-size: 4rem;
-            font-weight: bold;
-            font-style: italic;
-            color: var(--primary);
-            margin: 10px 0;
-        }
+        .reveal-btn { width: 90%; max-width: 350px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px; margin: 8px; border-radius: 15px; cursor: pointer; transition: 0.3s; color: #ccc; }
+        .reveal-btn.unlocked { background: rgba(255, 45, 117, 0.15); border-color: var(--primary); color: white; font-weight: bold; }
+        .note-card { background: linear-gradient(135deg, #ffb3d1, #ff75a0); color: #4a001a; padding: 30px; border-radius: 20px; width: 85%; max-width: 400px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); font-size: 1.2rem; line-height: 1.5; }
+        #percentText { font-size: 4rem; font-weight: bold; font-style: italic; color: var(--primary); margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -219,16 +97,13 @@
     <div id="screen2" class="screen">
         <h2 style="font-weight: normal;">Measuring your cuteness...</h2>
         <div id="percentText">0%</div>
-        <div class="progress-container">
-            <div id="bar" class="progress-bar"></div>
-        </div>
+        <div class="progress-container"><div id="bar" class="progress-bar"></div></div>
         <p id="statusText" style="letter-spacing: 1px; color: #aaa;">Calculating...</p>
     </div>
 
     <div id="screen3" class="screen">
         <div class="avatar" style="font-size: 40px; background: none; border: none; box-shadow: none;">❤️</div>
-        <h1 style="font-size: 2.5rem;">LITTLE obsessions from u🤌🦋</h1>
-        <p style="margin-bottom: 20px;">Tap each one to reveal</p>
+        <h1>LITTLE obsessions from u🤌🦋</h1>
         <div class="reveal-btn" onclick="reveal(this, 'With u I have a my Premium daysss🌹💫✨✨')">Click to reveal</div>
         <div class="reveal-btn" onclick="reveal(this, 'tumhary sth har ik pal haseeb lgta 😭🍬')">Click to reveal</div>
         <div class="reveal-btn" onclick="reveal(this, 'You make things feel lighter even though my heart🎈❣️')">Click to reveal</div>
@@ -239,18 +114,14 @@
 
     <div id="screen4" class="screen">
         <h2 style="font-family: 'Brush Script MT', cursive; font-size: 2.5rem;">A little note for you</h2>
-        <div class="note-card">
-            <p>Happy birthday mri shehzaadi❤️....Allah tumhei hameshaaaa khush rkhyy or duniya ki har preshani sy dur rkhy(Ameeen)🦋❣️the moments spent with r the bestest moments yrrrr 🙌Khush rha kro Hameshaa or apna khayal rkha kro 💖💌U mean the 🌎 to me 🤌..or udaas na howa kro 💐stay blessed mri jaaaaan 🌹 I adore u alottt🫂</p>
-        </div>
+        <div class="note-card"><p>Happy birthday mri shehzaadi❤️....Allah tumhei hameshaaaa khush rkhyy or duniya ki har preshani sy dur rkhy(Ameeen)🦋❣️the moments spent with r the bestest moments yrrrr 🙌Khush rha kro Hameshaa or apna khayal rkha kro 💖💌U mean the 🌎 to me 🤌..or udaas na howa kro 💐stay blessed mri jaaaaan 🌹 I adore u alottt🫂</p></div>
         <button onclick="nextScreen(5)">One last thing...</button>
     </div>
 
     <div id="screen5" class="screen">
-        <h1 style="font-size: 2.5rem;">Make a Wish...</h1>
-        <p id="mic-hint" style="margin-bottom: 5px;">Blow hard into your mic! 🌬️</p>
-        
+        <h1>Make a Wish...</h1>
+        <p id="mic-hint">Give it a <b>LOUD</b> blow! 🌬️</p>
         <div class="mic-visualizer"><div id="mic-bar"></div></div>
-
         <div class="cake-wrapper" id="cakeContainer" onclick="blowOut()">
             <div class="candle"><div class="flame"></div></div>
             <div class="candle" style="left: 30%;"><div class="flame"></div></div>
@@ -258,23 +129,21 @@
             <div class="cake-base"></div>
             <div class="cake-top-layer"></div>
         </div>
-
-        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">(Or Tap Cake to blow)</p>
+        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">(Takes a real blow to extinguish!)</p>
     </div>
 
     <div id="screen6" class="screen">
         <div class="avatar">🎂</div>
         <h1>Once Again Happy Birthday Bisma🌹🌸✨</h1>
-        <p style="font-size: 1.2rem;">May your every desire be fulfilled 💫May u get your heart in peace yara 🫂🦋🌹Ameeeeen</p>
+        <p>May your every desire be fulfilled 💫 Ameeeeen</p>
         <div style="font-size: 40px; margin: 20px;">🎁🎈🎊</div>
-        <p><i>You'll always be special to me always even though tum kaheeen bh ho 💞🌺</i></p>
+        <p><i>You'll always be special to me 💞🌺</i></p>
     </div>
 
     <script>
         function nextScreen(num) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen' + num).classList.add('active');
-
             if(num === 2) startLoading();
             if(num === 5) initMic(); 
         }
@@ -283,13 +152,9 @@
             let width = 0;
             let bar = document.getElementById('bar');
             let percentText = document.getElementById('percentText');
-            let statusText = document.getElementById('statusText');
-            
             let interval = setInterval(() => {
                 if (width >= 120) {
                     clearInterval(interval);
-                    statusText.innerText = "Cuteness Overloaded!";
-                    statusText.style.color = "#ff2d75";
                     setTimeout(() => nextScreen(3), 2000);
                 } else {
                     width++;
@@ -299,75 +164,51 @@
             }, 40);
         }
 
-        function reveal(el, text) {
-            el.innerText = text;
-            el.classList.add('unlocked');
-        }
+        function reveal(el, text) { el.innerText = text; el.classList.add('unlocked'); }
 
         let isBlown = false;
+        let loudFrames = 0; // Tracks how long the sound is loud
+
         function initMic() {
             if (isBlown) return;
-
-            const constraints = { 
-                audio: { 
-                    echoCancellation: false, 
-                    noiseSuppression: false, 
-                    autoGainControl: false 
-                } 
-            };
-
-            navigator.mediaDevices.getUserMedia(constraints)
+            navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const analyser = audioContext.createAnalyser();
                 const source = audioContext.createMediaStreamSource(stream);
-                
                 analyser.fftSize = 256;
                 source.connect(analyser);
-
                 const dataArray = new Uint8Array(analyser.frequencyBinCount);
                 const micBar = document.getElementById('mic-bar');
 
                 function monitor() {
                     if (isBlown) return;
-
                     analyser.getByteFrequencyData(dataArray);
                     let peak = 0;
-                    for (let i = 0; i < dataArray.length; i++) {
-                        if (dataArray[i] > peak) peak = dataArray[i];
-                    }
-                    
+                    for (let i = 0; i < dataArray.length; i++) { if (dataArray[i] > peak) peak = dataArray[i]; }
                     micBar.style.width = (peak / 255 * 100) + "%";
 
-                    // Sensitivity Threshold
-                    if (peak > 115) { 
-                        blowOut();
+                    // INCREASED THRESHOLD: 180 (was 115). Max is 255.
+                    // Also requires the sound to be loud for at least 5 frames (approx 0.1s)
+                    if (peak > 180) { 
+                        loudFrames++;
+                        if(loudFrames > 5) blowOut();
                     } else {
-                        requestAnimationFrame(monitor);
+                        loudFrames = 0; // Reset if sound drops
                     }
+                    requestAnimationFrame(monitor);
                 }
                 monitor();
-            })
-            .catch(err => {
-                document.getElementById('mic-status').innerText = "Mic blocked. Please Tap the Cake!";
-            });
+            }).catch(err => { document.getElementById('mic-status').innerText = "Mic Error. Tap Cake!"; });
         }
 
         function blowOut() {
             if (isBlown) return;
             isBlown = true;
-            
-            // Forcefully hide all flames immediately
-            const flames = document.querySelectorAll('.flame');
-            flames.forEach(f => {
-                f.style.display = 'none'; // Instant removal
-                f.classList.add('out');    // Extra CSS safety
-            });
-
-            document.getElementById('mic-hint').innerText = "Happy Birthday!! ❤️";
+            document.querySelectorAll('.flame').forEach(f => { f.style.display = 'none'; f.classList.add('out'); });
+            document.getElementById('mic-hint').innerText = "Wishes on their way! ❤️";
             setTimeout(() => nextScreen(6), 1500);
         }
     </script>
 </body>
 </html>
-
