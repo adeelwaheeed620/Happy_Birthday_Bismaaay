@@ -73,8 +73,8 @@
 
         @keyframes flicker { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.1); opacity: 1; } }
 
-        .mic-visualizer { width: 150px; height: 6px; background: #222; margin: 15px auto; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
-        #mic-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.05s linear; }
+        .mic-visualizer { width: 180px; height: 8px; background: #222; margin: 15px auto; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
+        #mic-bar { width: 0%; height: 100%; background: #00ff00; transition: width 0.05s linear; }
 
         .progress-container { width: 80%; max-width: 300px; background: #333; height: 14px; border-radius: 10px; margin: 20px 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
         .progress-bar { width: 0%; height: 100%; background: linear-gradient(to right, #ff2d75, #ffb3d1); box-shadow: 0 0 10px var(--primary); }
@@ -120,7 +120,7 @@
 
     <div id="screen5" class="screen">
         <h1>Make a Wish...</h1>
-        <p id="mic-hint">Give it a <b>LOUD</b> blow! 🌬️</p>
+        <p id="mic-hint">Give it a <b>SUPER LOUD</b> blow! 🌬️</p>
         <div class="mic-visualizer"><div id="mic-bar"></div></div>
         <div class="cake-wrapper" id="cakeContainer" onclick="blowOut()">
             <div class="candle"><div class="flame"></div></div>
@@ -129,7 +129,7 @@
             <div class="cake-base"></div>
             <div class="cake-top-layer"></div>
         </div>
-        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">(Takes a real blow to extinguish!)</p>
+        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">(Blow directly into the mic!)</p>
     </div>
 
     <div id="screen6" class="screen">
@@ -152,14 +152,21 @@
             let width = 0;
             let bar = document.getElementById('bar');
             let percentText = document.getElementById('percentText');
+            let statusText = document.getElementById('statusText');
+
             let interval = setInterval(() => {
                 if (width >= 120) {
                     clearInterval(interval);
-                    setTimeout(() => nextScreen(3), 2000);
+                    // FIXED: Re-added the message logic
+                    statusText.innerText = "Cuteness Overloaded!";
+                    statusText.style.color = "#ff2d75";
+                    statusText.style.fontWeight = "bold";
+                    setTimeout(() => nextScreen(3), 2500);
                 } else {
                     width++;
                     bar.style.width = (width > 100 ? 100 : width) + '%';
                     percentText.innerText = width + '%';
+                    if(width === 101) statusText.innerText = "Wait... it's still going!";
                 }
             }, 40);
         }
@@ -167,7 +174,7 @@
         function reveal(el, text) { el.innerText = text; el.classList.add('unlocked'); }
 
         let isBlown = false;
-        let loudFrames = 0; // Tracks how long the sound is loud
+        let sustainCount = 0; 
 
         function initMic() {
             if (isBlown) return;
@@ -186,15 +193,17 @@
                     analyser.getByteFrequencyData(dataArray);
                     let peak = 0;
                     for (let i = 0; i < dataArray.length; i++) { if (dataArray[i] > peak) peak = dataArray[i]; }
+                    
+                    // Visual bar scaling
                     micBar.style.width = (peak / 255 * 100) + "%";
 
-                    // INCREASED THRESHOLD: 180 (was 115). Max is 255.
-                    // Also requires the sound to be loud for at least 5 frames (approx 0.1s)
-                    if (peak > 180) { 
-                        loudFrames++;
-                        if(loudFrames > 5) blowOut();
+                    // ULTRA HIGH THRESHOLD: 230
+                    // Sound must be sustained for 10 frames (~0.2 seconds)
+                    if (peak > 230) { 
+                        sustainCount++;
+                        if(sustainCount > 10) blowOut();
                     } else {
-                        loudFrames = 0; // Reset if sound drops
+                        sustainCount = 0; 
                     }
                     requestAnimationFrame(monitor);
                 }
