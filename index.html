@@ -120,7 +120,7 @@
         }
         .flame.out { 
             opacity: 0; 
-            transform: scale(0) translateY(-10px);
+            transform: scale(0) translateY(-20px);
         }
 
         @keyframes flicker {
@@ -128,20 +128,21 @@
             to { transform: scale(1.1); opacity: 1; }
         }
 
-        /* Mic Intensity Visualizer */
         .mic-visualizer {
-            width: 100px;
-            height: 4px;
-            background: #333;
-            margin: 10px auto;
-            border-radius: 2px;
+            width: 150px;
+            height: 6px;
+            background: #222;
+            margin: 15px auto;
+            border-radius: 10px;
+            border: 1px solid #333;
             overflow: hidden;
         }
         #mic-bar {
             width: 0%;
             height: 100%;
             background: var(--primary);
-            transition: width 0.1s;
+            box-shadow: 0 0 10px var(--primary);
+            transition: width 0.05s linear;
         }
 
         .progress-container {
@@ -243,7 +244,7 @@
 
     <div id="screen5" class="screen">
         <h1 style="font-size: 2.5rem;">Make a Wish...</h1>
-        <p id="mic-hint" style="margin-bottom: 5px;">Blow into your mic to blow the candles! 🌬️</p>
+        <p id="mic-hint" style="margin-bottom: 5px;">Blow hard into your mic! 🌬️</p>
         
         <div class="mic-visualizer"><div id="mic-bar"></div></div>
 
@@ -255,7 +256,7 @@
             <div class="cake-top-layer"></div>
         </div>
 
-        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">Tap cake if mic doesn't work</p>
+        <p id="mic-status" style="margin-top: 30px; opacity: 0.6; font-size: 0.8rem;">Listening... (or Tap Cake)</p>
     </div>
 
     <div id="screen6" class="screen">
@@ -264,7 +265,6 @@
         <p style="font-size: 1.2rem;">May your every desire be fulfilled 💫May u get your heart in peace yara 🫂🦋🌹Ameeeeen</p>
         <div style="font-size: 40px; margin: 20px;">🎁🎈🎊</div>
         <p><i>You'll always be special to me always even though tum kaheeen bh ho 💞🌺</i></p>
-        <button onclick="resetCandles()" style="padding: 10px 20px; font-size: 0.8rem; opacity: 0.7;">Relight Candles? 🕯️</button>
     </div>
 
     <script>
@@ -292,7 +292,6 @@
                     width++;
                     bar.style.width = (width > 100 ? 100 : width) + '%';
                     percentText.innerText = width + '%';
-                    if(width === 101) statusText.innerText = "Wait... it's still going!";
                 }
             }, 40);
         }
@@ -302,57 +301,67 @@
             el.classList.add('unlocked');
         }
 
-        // --- Improved Mic Blow Detection ---
-        let micActive = false;
+        // --- ULTRA SENSITIVE MIC BLOW DETECTION ---
+        let isBlown = false;
         function initMic() {
-            if (micActive) return;
-            navigator.mediaDevices.getUserMedia({ audio: true })
+            if (isBlown) return;
+
+            // Request mic WITH processing DISABLED for raw sound capture
+            const constraints = { 
+                audio: { 
+                    echoCancellation: false, 
+                    noiseSuppression: false, 
+                    autoGainControl: false 
+                } 
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints)
             .then(stream => {
-                micActive = true;
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const analyser = audioContext.createAnalyser();
                 const source = audioContext.createMediaStreamSource(stream);
                 
-                analyser.fftSize = 256;
+                analyser.fftSize = 512;
                 source.connect(analyser);
 
                 const dataArray = new Uint8Array(analyser.frequencyBinCount);
                 const micBar = document.getElementById('mic-bar');
 
-                function checkVolume() {
-                    analyser.getByteFrequencyData(dataArray);
-                    let values = 0;
-                    for (let i = 0; i < dataArray.length; i++) {
-                        values += dataArray[i];
-                    }
-                    let average = values / dataArray.length;
-                    
-                    // Update visualizer bar
-                    micBar.style.width = Math.min(average * 2, 100) + "%";
+                function monitor() {
+                    if (isBlown) return;
 
-                    if (average > 35) { // Lowered threshold for easier blowing
+                    analyser.getByteFrequencyData(dataArray);
+                    
+                    // Find the peak volume in the frequency data
+                    let peak = 0;
+                    for (let i = 0; i < dataArray.length; i++) {
+                        if (dataArray[i] > peak) peak = dataArray[i];
+                    }
+                    
+                    // Update visualizer
+                    micBar.style.width = (peak / 255 * 100) + "%";
+
+                    // Threshold: If sound hits 40% of max capacity
+                    if (peak > 110) { 
                         blowOut();
                     } else {
-                        if(micActive) requestAnimationFrame(checkVolume);
+                        requestAnimationFrame(monitor);
                     }
                 }
-                checkVolume();
+                monitor();
             })
             .catch(err => {
-                document.getElementById('mic-status').innerText = "Mic access required. Tap cake to blow!";
+                console.log("Mic error:", err);
+                document.getElementById('mic-status').innerText = "Mic blocked. Please Tap the Cake!";
             });
         }
 
         function blowOut() {
-            micActive = false; // Stop mic loop
+            if (isBlown) return;
+            isBlown = true;
             document.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
-            document.getElementById('mic-hint').innerText = "Wish coming true... ❤️";
+            document.getElementById('mic-hint').innerText = "Happy Birthday!! ❤️";
             setTimeout(() => nextScreen(6), 2000);
-        }
-
-        function resetCandles() {
-            document.querySelectorAll('.flame').forEach(f => f.classList.remove('out'));
-            nextScreen(5);
         }
     </script>
 </body>
